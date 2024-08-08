@@ -1,7 +1,8 @@
 const express = require("express");
-const { parse } = require("flatted");
 const router = express.Router();
 const runPm2 = require("../utils/startInstance");
+
+let schedule, title;
 
 router.get("/", (req, res) => {
   res.send("Hello Scheduler");
@@ -9,7 +10,16 @@ router.get("/", (req, res) => {
 
 router.post("/new", async (req, res) => {
   console.log(req.body);
-  // runPm2();
+  schedule = req.body.schedule;
+  title = req.body.title;
+  try {
+    const state = await runPm2(title);
+    console.log("🚀 ~ router.post ~ state:", state);
+    res.status(200).json({ message: "success" });
+  } catch (error) {
+    console.log("🚀 ~ router.post ~ error:", error);
+    res.status(500).json({ message: error.message });
+  }
 });
 
 router.get("/:id", (req, res) => {
@@ -21,4 +31,4 @@ router.param("id", (req, res, next, id) => {
   next();
 });
 
-module.exports = router;
+module.exports = { router, schedule, title };
