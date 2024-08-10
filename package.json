@@ -16,8 +16,9 @@
     "express": "^4.19.2",
     "flatted": "^3.3.1",
     "node-cron": "^3.0.3",
-    "pm2": "^5.4.2",
-    "shopify-api-node": "^3.13.4"
+    "pm2": "^3.2.2",
+    "shopify-api-node": "^3.13.4",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"

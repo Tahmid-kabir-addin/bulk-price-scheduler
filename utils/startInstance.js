@@ -1,8 +1,9 @@
 const pm2 = require("pm2");
 const path = require("path");
 const fs = require("fs");
+const { exec } = require("child_process");
 
-const runPm2 = (title) => {
+const runPm2 = (schedule, title) => {
   return new Promise((resolve, reject) => {
     try {
       const scriptPath = path.join(__dirname, "scheduler.js"); // Adjust the path to your script
@@ -30,6 +31,7 @@ const runPm2 = (title) => {
             script: scriptPath, // Script to be run
             name: `${title}-sale instance`, // Name of the process
             instances: 1, // Number of instances
+            args: JSON.stringify({ schedule, title }),
           },
           (err, apps) => {
             if (err) {
@@ -55,12 +57,12 @@ const runPm2 = (title) => {
     }
   });
 };
-(async () => {
-  try {
-    const state = await runPm2("test2");
-    console.log(state);
-  } catch (error) {
-    console.error(error);
-  }
-})();
-// module.exports = runPm2;
+// (async () => {
+//   try {
+//     const state = await runPm2("test2");
+//     console.log(state);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// })();
+module.exports = runPm2;
