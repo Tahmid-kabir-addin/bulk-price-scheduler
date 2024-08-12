@@ -11,16 +11,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@hokify/agenda": "^6.3.0",
+    "@prisma/client": "^5.18.0",
+    "@shopify/shopify-api": "^11.2.0",
     "cron": "^3.1.7",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "flatted": "^3.3.1",
     "node-cron": "^3.0.3",
-    "pm2": "^3.2.2",
+    "pm2": "^4.0.0",
     "shopify-api-node": "^3.13.4",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "prisma": "^5.18.0"
   }
 }

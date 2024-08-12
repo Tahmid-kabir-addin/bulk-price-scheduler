@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id          String    @id
+  shop        String
+  state       String
+  isOnline    Boolean   @default(false)
+  scope       String?
+  expires     DateTime?
+  accessToken String
+  userId      BigInt?
+}
+
+model CompareAtPrice {
+  id                    String  @id @default(uuid())
+  action                String
+  relativeToActualPrice Boolean @default(false)
+  percent               Float   @default(0)
+  amount                Float   @default(0)
+  type                  String  @default("by_percent")
+  overrideCents         Boolean @default(false)
+  toNearestValue        Boolean @default(false)
+  Task                  Task[]
+  Sale                  Sale[]
+  cents                 Int     @default(0)
+}
+
+model PriceFields {
+  id             String  @id @default(uuid())
+  percent        Float   @default(0)
+  amount         Float   @default(0)
+  type           String  @default("by_percent")
+  action         String
+  overrideCents  Boolean @default(false)
+  toNearestValue Boolean @default(false)
+  cents          Int     @default(0)
+  Task           Task[]
+  Sale           Sale[]
+}
+
+model CostPerItemFields {
+  id             String  @id @default(uuid())
+  percent        Float   @default(0)
+  amount         Float   @default(0)
+  type           String  @default("by_percent")
+  action         String
+  overrideCents  Boolean @default(false)
+  toNearestValue Boolean @default(false)
+  cents          Int     @default(0)
+  Task           Task[]
+}
+
+model Task {
+  id                  String             @id @default(uuid())
+  createdAt           DateTime           @default(now())
+  status              String             @default("Completed")
+  CompareAtPrice      CompareAtPrice     @relation(fields: [compareAtPriceId], references: [id])
+  compareAtPriceId    String
+  PriceFields         PriceFields        @relation(fields: [priceFieldsId], references: [id])
+  priceFieldsId       String
+  CostPerItemFields   CostPerItemFields? @relation(fields: [costPerItemFieldsId], references: [id])
+  costPerItemFieldsId String?
+  applyTo             String             @default("whole_store")
+  exclude             String             @default("nothing")
+  Product             Product[]
+}
+
+model Sale {
+  id               String         @id @default(uuid())
+  title            String
+  createdAt        DateTime       @default(now())
+  startedAt        DateTime?
+  endedAt          DateTime?
+  status           String         @default("Active")
+  CompareAtPrice   CompareAtPrice @relation(fields: [compareAtPriceId], references: [id])
+  compareAtPriceId String
+  PriceFields      PriceFields    @relation(fields: [priceFieldsId], references: [id])
+  priceFieldsId    String
+  applyTo          String         @default("whole_store")
+  exclude          String         @default("nothing")
+  tags             String // comma seperated
+  scheduleTime     Schedule       @relation(fields: [scheduleId], references: [id])
+  scheduleId       String         @unique
+  Product          Product[]
+}
+
+model Schedule {
+  id         String  @id @default(uuid())
+  startDate  String
+  startTime  String
+  setEndDate Boolean
+  endDate    String?
+  endTime    String?
+  Sale       Sale?
+}
+
+model Product {
+  id        String    @id @default(uuid())
+  productId String
+  createdAt DateTime  @default(now())
+  title     String
+  Task      Task?     @relation(fields: [taskId], references: [id])
+  taskId    String?
+  variant   variant[]
+  Sale      Sale?     @relation(fields: [salesId], references: [id])
+  salesId   String?
+}
+
+model variant {
+  id                     String   @id @default(uuid())
+  variantId              String
+  title                  String
+  createdAt              DateTime @default(now())
+  inventoryItemId        String
+  productId              String
+  Product                Product  @relation(fields: [productId], references: [id])
+  previousPrice          Float    @default(0)
+  previousCompareAtPrice Float    @default(0)
+  previousCostPrice      Float    @default(0)
+}
+
+model timer {
+  id      String @id @default(uuid())
+  startId String @unique
+  endId   String @unique
+  status  String @default("Active")
+}

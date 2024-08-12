@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const runPm2 = require("../utils/startInstance");
 const { v4: uuidv4 } = require("uuid");
-
-let schedule, title;
+const { doScheduling } = require("../utils/startInstance");
+require("dotenv").config();
 
 router.get("/", (req, res) => {
   res.send("Hello Scheduler");
@@ -11,15 +10,9 @@ router.get("/", (req, res) => {
 
 router.post("/new", async (req, res) => {
   console.log(req.body);
-  schedule = req.body.schedule;
-  console.log("🚀 ~ router.post ~ schedule:", schedule)
-  title = req.body.title;
-  // remove " " from title
-  title = title.replace(/ /g, "");
-  title = `${title}-${uuidv4()}`;
+
   try {
-    const state = await runPm2(schedule, title);
-    // const state = runCronJob(title, schedule);
+    const state = await doScheduling(req.body);
     console.log("🚀 ~ router.post ~ state:", state);
     res.status(200).json({ message: "success" });
   } catch (error) {
@@ -37,4 +30,4 @@ router.param("id", (req, res, next, id) => {
   next();
 });
 
-module.exports = { router, schedule, title };
+module.exports = { router };
