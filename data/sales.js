@@ -7,7 +7,7 @@ const shopify = shopifyApi({
   apiKey: process.env.SHOPIFY_API_KEY,
   apiSecretKey: process.env.SHOPIFY_API_SECRET,
   scopes: ["read_inventory", "write_inventory", "write_products"],
-  hostName: "https://aa41-103-230-104-42.ngrok-free.app:8000",
+  hostName: "https://lionfish-app-5tuty.ondigitalocean.app/",
 });
 
 /**
