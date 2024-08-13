@@ -136,7 +136,11 @@
 
 // module.exports = { runSpawn };
 
-const { updateProductsPrice, updateStatus, rollbackSale } = require("../data/sales");
+const {
+  updateProductsPrice,
+  updateStatus,
+  rollbackSale,
+} = require("../data/sales");
 
 const doScheduling = async ({
   saleId,
@@ -148,7 +152,7 @@ const doScheduling = async ({
   timeUntilTask,
   timeUntilFinish,
   session,
-  status
+  status,
 }) => {
   console.log("setting timeout");
   // Set a timeout to execute the task at the specified date and time
@@ -156,7 +160,12 @@ const doScheduling = async ({
     setTimeout(async () => {
       await Promise.all([
         updateProductsPrice(productsWithPrice, priceFields, session),
-        updateProductsPrice(productsWithPrice, compareAtPriceFields, session, tags),
+        updateProductsPrice(
+          productsWithPrice,
+          compareAtPriceFields,
+          session,
+          tags
+        ),
       ]);
       if (status === "Scheduled") {
         await updateStatus(saleId, "Active");
@@ -165,6 +174,7 @@ const doScheduling = async ({
   } catch (error) {
     console.log("🚀 ~ doScheduling ~ error:", error);
   }
+  console.log("Time out set for sale");
   // Set a timeout to rollback the task at the specified date and time
   if (schedule.set_end_date) {
     setTimeout(async () => {
